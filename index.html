@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop Form Builder</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Form Builder</h1>
+        <div class="form-builder">
+            <div class="toolbox">
+                <h2>Form Elements</h2>
+                <div class="toolbox-item" draggable="true" data-type="text">
+                    <i class="fas fa-font"></i> Text Input
+                </div>
+                <div class="toolbox-item" draggable="true" data-type="textarea">
+                    <i class="fas fa-align-left"></i> Textarea
+                </div>
+                <div class="toolbox-item" draggable="true" data-type="select">
+                    <i class="fas fa-caret-square-down"></i> Dropdown
+                </div>
+                <div class="toolbox-item" draggable="true" data-type="checkbox">
+                    <i class="fas fa-check-square"></i> Checkbox
+                </div>
+                <div class="toolbox-item" draggable="true" data-type="radio">
+                    <i class="fas fa-dot-circle"></i> Radio Button
+                </div>
+            </div>
+            <div class="form-preview" id="formPreview">
+                <h2>Form Preview</h2>
+                <div class="drop-zone">
+                    <p>Drag and drop form elements here</p>
+                </div>
+            </div>
+        </div>
+        <button class="save-btn">Save Form</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toolboxItems = document.querySelectorAll('.toolbox-item');
+            const dropZone = document.querySelector('.drop-zone');
+
+            toolboxItems.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+            });
+
+            dropZone.addEventListener('dragover', handleDragOver);
+            dropZone.addEventListener('drop', handleDrop);
+
+            function handleDragStart(e) {
+                e.dataTransfer.setData('type', e.target.getAttribute('data-type'));
+            }
+
+            function handleDragOver(e) {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            }
+
+            function handleDrop(e) {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                const type = e.dataTransfer.getData('type');
+                addElementToForm(type);
+            }
+
+            function addElementToForm(type) {
+                let element;
+                switch(type) {
+                    case 'text':
+                        element = document.createElement('div');
+                        element.className = 'form-element';
+                        element.innerHTML = `
+                            <label>Text Input: <input type="text" placeholder="Enter text"></label>
+                            <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
+                        `;
+                        break;
+                    case 'textarea':
+                        element = document.createElement('div');
+                        element.className = 'form-element';
+                        element.innerHTML = `
+                            <label>Textarea: <textarea placeholder="Enter text"></textarea></label>
+                            <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
+                        `;
+                        break;
+                    case 'select':
+                        element = document.createElement('div');
+                        element.className = 'form-element';
+                        element.innerHTML = `
+                            <label>Dropdown:
+                                <select>
+                                    <option value="option1">Option 1</option>
+                                    <option value="option2">Option 2</option>
+                                    <option value="option3">Option 3</option>
+                                </select>
+                            </label>
+                            <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
+                        `;
+                        break;
+                    case 'checkbox':
+                        element = document.createElement('div');
+                        element.className = 'form-element';
+                        element.innerHTML = `
+                            <label>Checkbox: <input type="checkbox"></label>
+                            <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
+                        `;
+                        break;
+                    case 'radio':
+                        element = document.createElement('div');
+                        element.className = 'form-element';
+                        element.innerHTML = `
+                            <label>Radio Button: <input type="radio" name="radio"></label>
+                            <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
+                        `;
+                        break;
+                }
+                if (element) {
+                    element.querySelector('.delete-btn').addEventListener('click', () => {
+                        element.remove();
+                    });
+                    dropZone.appendChild(element);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
